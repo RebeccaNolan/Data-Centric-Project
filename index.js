@@ -1,5 +1,5 @@
 var express = require('express');
-var app = express(); //test comment for git
+var app = express();
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: false}))
@@ -17,7 +17,8 @@ app.listen(3004, () => {
 });
 
 app.get('/', (req, res) => {
-    res.send('<h1>Welcome to My Project</h1><p>This is the homepage.</p>');
+    //res.send('<h1>G00423921</p>');
+    res.sendFile(__dirname + "/views/home.html");
 });
  
 app.get('/students', (req, res) => {
