@@ -17,7 +17,6 @@ app.listen(3004, () => {
 });
 
 app.get('/', (req, res) => {
-    //res.send('<h1>G00423921</p>');
     res.sendFile(__dirname + "/views/home.html");
 });
  
@@ -31,32 +30,22 @@ app.get('/students', (req, res) => {
     });
 });
 
-app.get('/addStudent', (req, res) => {
+app.get('/students/add', (req, res) => {
     res.render('addStudent');
+    //res.render('index.js', {link: "http://localhost:3000/addStudent"})
 });
 
-app.post('/addStudent', (req, res) => {
+app.post('/students/add', (req, res) => {
     mySQL_DAO.addStudent(req.body.sid, req.body.name, req.body.age)
         .then(() => {
-            res.redirect('/listStudents');
+            res.redirect('/students');
         })
         .catch((error) => {
             res.send('Error adding student: ' + error);
         });
 });
 
-app.post('/students/update/:sid', (req, res) => {
-    const sid = req.params.sid;
-    const { name, age } = req.body;
-    mySQL_DAO.updateStudent(sid, name, age)
-        .then(() => res.redirect('/students'))
-        .catch((error) => {
-            console.error('Error updating student:', error);
-            res.status(500).send('Error updating student');
-        });
-});
-
-app.get('/students/update/:sid', (req, res) => {
+app.get('/students/edit/:sid', (req, res) => {
     const sid = req.params.sid;
     mySQL_DAO.getStudents()
         .then((students) => {
@@ -73,6 +62,16 @@ app.get('/students/update/:sid', (req, res) => {
         });
 });
 
+app.post('/students/edit/:sid', (req, res) => {
+    const sid = req.params.sid;
+    const { name, age } = req.body;
+    mySQL_DAO.updateStudent(sid, name, age)
+        .then(() => res.redirect('/students'))
+        .catch((error) => {
+            console.error('Error updating student:', error);
+            res.status(500).send('Error updating student');
+        });
+});
  
 app.get('/grades', (req, res) => {
     res.render('grades', { title: 'Grades Page', grades: [] });
