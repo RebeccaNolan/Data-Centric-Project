@@ -16,10 +16,12 @@ app.listen(3004, () => {
     console.log("running on port 3004")
 });
 
+//Home page
 app.get('/', (req, res) => {
     res.sendFile(__dirname + "/views/home.html");
 });
  
+//Students page
 app.get('/students', (req, res) => {
     mySQL_DAO.getStudents()
     .then((students) => {
@@ -30,11 +32,14 @@ app.get('/students', (req, res) => {
     });
 });
 
+//ADD GET
 app.get('/students/add', (req, res) => {
     res.render('addStudent');
     //res.render('index.js', {link: "http://localhost:3000/addStudent"})
 });
 
+
+//ADD POST 
 app.post('/students/add', (req, res) => {
     mySQL_DAO.addStudent(req.body.sid, req.body.name, req.body.age)
         .then(() => {
@@ -45,6 +50,7 @@ app.post('/students/add', (req, res) => {
         });
 });
 
+//EDIT GET
 app.get('/students/edit/:sid', (req, res) => {
     const sid = req.params.sid;
     mySQL_DAO.getStudents()
@@ -62,6 +68,7 @@ app.get('/students/edit/:sid', (req, res) => {
         });
 });
 
+//EDIT POST
 app.post('/students/edit/:sid', (req, res) => {
     const sid = req.params.sid;
     const { name, age } = req.body;
@@ -73,10 +80,18 @@ app.post('/students/edit/:sid', (req, res) => {
         });
 });
  
+//GRADES
 app.get('/grades', (req, res) => {
-    res.render('grades', { title: 'Grades Page', grades: [] });
+    mySQL_DAO.getInfo()
+    .then((grades) => {
+        res.render('grades', {grades});
+    })
+    .catch((error) => {
+        res.status(500).send("error");
+    });
 });
 
+//LECTURERS
 app.get('/lecturers', (req, res) => {
     res.render('lecturers', { title: 'Lecturers Page', lecturers: [] });
 });

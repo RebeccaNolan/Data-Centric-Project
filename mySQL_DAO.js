@@ -36,4 +36,12 @@ const updateStudent = (sid, name, age) => {
     return pool.query('UPDATE student SET name = ?, age = ? WHERE sid = ?', [name, age, sid]);
 };
 
-module.exports = { getStudents, addStudent, updateStudent };
+const getGrades = (sid, mid, grade) => {
+    return pool.query('SELECT * FROM grade')
+};
+
+const getInfo = () => {
+return pool.query('SELECT student.name AS student_name, module.name AS module_name, grade.grade  FROM student LEFT JOIN grade ON student.sid = grade.sid LEFT JOIN module ON grade.mid = module.mid ORDER BY student.name ASC, grade.grade ASC')
+};
+
+module.exports = { getStudents, addStudent, updateStudent, getGrades, getInfo };
