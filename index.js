@@ -4,7 +4,7 @@ var app = express();
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: false}))
 
-const { check, validationResult } = require('express-validator');
+var { check, validationResult } = require('express-validator');
 
 var ejs = require('ejs');
 app.set('view engine', 'ejs');
@@ -80,7 +80,7 @@ app.post('/students/edit/:sid', (req, res) => {
         });
 });
  
-//GRADES
+//GRADES GET
 app.get('/grades', (req, res) => {
     mySQL_DAO.getInfo()
     .then((grades) => {
@@ -91,7 +91,7 @@ app.get('/grades', (req, res) => {
     });
 });
 
-//LECTURERS
+//LECTURERS GET
 app.get('/lecturers', (req, res) => {
    MongoDB_DAO.getLecturers()
    .then((lecturers) => {
@@ -100,4 +100,23 @@ app.get('/lecturers', (req, res) => {
    .catch((error) => {
     res.status(500).send("error")
    });
+});
+
+app.get('/lecturers/delete/:lid', (req, res) => {
+    var lecturerId = req.params.lid;
+
+    //checl for modules
+    mySQL_DAO.getModulesByLectID(lecturerId)
+    .then((modules) => {
+        if(modules.length > 0) {
+            res.send(`<html> <head> <body> <a href="/lecturers">Home</a> <h1>Error message</h1><h3>Cannot delete lecturer ${lecturerId}. They have associated modules.<h3> </body></head></html>`);
+        }
+        else {
+            MongoDB_DAO.deleteLecturer(lecturerId,modules)
+            .then(()=> res.redirect('/lecturers'))
+            .catch((error) => {
+                res.status(500).send('error')
+            });
+        }
+    });
 });

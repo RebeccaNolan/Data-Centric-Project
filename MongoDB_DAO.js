@@ -20,16 +20,8 @@ MongoClient.connect('mongodb://localhost:27017')
     };
 
     //delete lecturer if not associated with any modules
-    var deleteLecturer = (lecturerID, associatedModules) => {
-        return new Promise((resolve, reject) => {
-            if(associatedModules.length > 0) {
-                reject("can't delete")
-            }else {
-                coll.deleteOne({_id: lecturerID})
-                .then(resolve)
-                .catch(reject);
-            }
-        });
+    var deleteLecturer = (lecturerId) => {
+        return coll.deleteOne({ _id: lecturerId });
     };
 
     module.exports = {getLecturers, deleteLecturer}
