@@ -57,7 +57,7 @@ app.get('/students/edit/:sid', (req, res) => {
         .then((students) => {
             const student = students.find(s => s.sid === sid); // Find the student by ID
             if (student) {
-                res.render('updateStudent', { student }); // Render updateStudent.ejs with the student
+                res.render('updateStudent', { student, errors:[] }); // Render updateStudent.ejs with the student
             } else {
                 res.status(404).send('Student not found');
             }
@@ -72,12 +72,30 @@ app.get('/students/edit/:sid', (req, res) => {
 app.post('/students/edit/:sid', (req, res) => {
     const sid = req.params.sid;
     const { name, age } = req.body;
-    mySQL_DAO.updateStudent(sid, name, age)
-        .then(() => res.redirect('/students'))
-        .catch((error) => {
-            console.error('Error updating student:', error);
-            res.status(500).send('Error updating student');
-        });
+
+    let errors = [];
+
+    //validation
+    if(name.length < 2) {
+        errors.push('Student Name should be at least 2 characters');
+    }
+    if(age < 18) {
+        errors.push('Student Age should be at least 18');
+    }
+
+    // render page again with errors
+    if (errors.length > 0) {
+        
+        const student = { sid, name, age };
+        res.render('updateStudent', { student, errors });
+    } else {
+        mySQL_DAO.updateStudent(sid, name, age)
+            .then(() => res.redirect('/students'))
+            .catch((error) => {
+                console.error('Error updating student:', error);
+                res.status(500).send('Error updating student');
+            });
+    }
 });
  
 //GRADES GET
