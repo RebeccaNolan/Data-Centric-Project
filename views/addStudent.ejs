@@ -1,4 +1,6 @@
 <h1>Add Student</h1>
+
+<!-- display validation errors -->
 <ul>
     <% if (errors && errors.length > 0) { %>
         <% errors.forEach((error) => { %>
@@ -6,6 +8,7 @@
         <% }); %>
     <% } %>
 </ul>
+<!-- Form to add student  -->
 <form action="/students/add" method="POST">
     <label>Student ID:</label>
     <input type="text" name="sid" value="<%= student?.sid || '' %>">

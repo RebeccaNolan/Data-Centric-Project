@@ -12,7 +12,9 @@
         <% grades.forEach(grade => { %>
             <tr>
                 <td><%= grade.student_name %></td>
+                <!-- Display the module name or leave blank if undefined -->
                 <td><%= grade.module_name || '' %></td>
+                <!-- Display the grade or leave blank if null -->
                 <td><%= grade.grade !== null ? grade.grade : '' %></td>
             </tr>
         <% }) %>
