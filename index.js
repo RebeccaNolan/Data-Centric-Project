@@ -34,21 +34,50 @@ app.get('/students', (req, res) => {
 
 //ADD GET
 app.get('/students/add', (req, res) => {
-    res.render('addStudent');
-    //res.render('index.js', {link: "http://localhost:3000/addStudent"})
+    res.render('addStudent', { errors: [], student: {} }); // Pass an empty errors array and student object initially
+
 });
 
 
 //ADD POST 
 app.post('/students/add', (req, res) => {
-    mySQL_DAO.addStudent(req.body.sid, req.body.name, req.body.age)
-        .then(() => {
-            res.redirect('/students');
+    const { sid, name, age } = req.body;
+
+    let errors = [];
+    if (!sid || sid.length !== 4) {
+        errors.push('Student ID should be 4 characters.');
+    }
+    if (!name || name.length < 2) {
+        errors.push('Student Name should be at least 2 characters.');
+    }
+    if (!age || age < 18) {
+        errors.push('Student Age should be at least 18.');
+    }
+
+    if (errors.length > 0) {
+        // Render the form with error messages and the previously entered data
+        res.render('addStudent', { errors, student: { sid, name, age } });
+        return;
+    }
+
+    // check if Student ID already exists
+    mySQL_DAO.getStudents()
+        .then((students) => {
+            const existingStudent = students.find((student) => student.sid === sid);
+            if (existingStudent) {
+                res.render('addStudent', {
+                    errors: [`Student ID ${sid} already exists.`],
+                    student: { sid, name, age },
+                });
+            } else {
+                mySQL_DAO.addStudent(sid, name, age)
+                    .then(() => res.redirect('/students'))
+                    .catch((error) => res.status(500).send('Error adding student: ' + error));
+            }
         })
-        .catch((error) => {
-            res.send('Error adding student: ' + error);
-        });
+        .catch((error) => res.status(500).send('Error fetching students: ' + error));
 });
+
 
 //EDIT GET
 app.get('/students/edit/:sid', (req, res) => {

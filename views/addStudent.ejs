@@ -1,13 +1,20 @@
 <h1>Add Student</h1>
-<form action="/addStudent" method="POST">
+<ul>
+    <% if (errors && errors.length > 0) { %>
+        <% errors.forEach((error) => { %>
+            <li><%= error %></li>
+        <% }); %>
+    <% } %>
+</ul>
+<form action="/students/add" method="POST">
     <label>Student ID:</label>
-    <input type="text">
+    <input type="text" name="sid" value="<%= student?.sid || '' %>">
     <br>
     <label>Name:</label>
-    <input type="text">
+    <input type="text" name="name" value="<%= student?.name || '' %>">
     <br>
     <label>Age:</label>
-    <input type="text">
+    <input type="text" name="age" value="<%= student?.age || '' %>">
     <br>
     <input type="submit" value="Add">
 </form>
