@@ -40,6 +40,14 @@ var addStudent = (sid, name, age) => {
     });
 };
 
+var deleteStudent = (sid) => {
+    return new Promise((resolve, reject) => {
+        pool.query('DELETE FROM student where sid = ?', [sid])
+        .then(() => resolve())
+        .catch((error) => reject(error));
+    });
+};
+
 
 var updateStudent = (sid, name, age) => {
     return new Promise((resolve, reject) => {
@@ -91,4 +99,4 @@ var getModulesByLectID = (lecturerId) => {
     });
 };
 
-module.exports = { getStudents, addStudent, updateStudent, getGrades, getInfo,getModulesByLectID };
+module.exports = { getStudents, addStudent, deleteStudent, updateStudent, getGrades, getInfo,getModulesByLectID };

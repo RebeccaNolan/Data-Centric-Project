@@ -78,6 +78,17 @@ app.post('/students/add', (req, res) => {
         .catch((error) => res.status(500).send('Error fetching students: ' + error));
 });
 
+app.get('/students/delete/:sid', (req, res) => { 
+    var sid = req.params.sid;
+
+    mySQL_DAO.deleteStudent(sid)
+    .then(()=>{
+        res.redirect('/students');
+    })
+    .catch((error) => {
+        res.status(500).send('Error')
+    })
+});
 
 //EDIT GET
 app.get('/students/edit/:sid', (req, res) => {
