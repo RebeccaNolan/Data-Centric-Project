@@ -14,12 +14,22 @@ MongoClient.connect('mongodb://localhost:27017')
         console.log('Connection error:', error.message);
     });
 
+    //get all lecturers
     var getLecturers = () => {
         return coll.find({}).sort({ _id: 1 }).toArray(); 
-    }
+    };
 
-    var deleteLecturer = () => {
-        return coll.deleteOne({ _id: lecturerId });
-    }
+    //delete lecturer if not associated with any modules
+    var deleteLecturer = (lecturerID, associatedModules) => {
+        return new Promise((resolve, reject) => {
+            if(associatedModules.length > 0) {
+                reject("can't delete")
+            }else {
+                coll.deleteOne({_id: lecturerID})
+                .then(resolve)
+                .catch(reject);
+            }
+        });
+    };
 
     module.exports = {getLecturers, deleteLecturer}
