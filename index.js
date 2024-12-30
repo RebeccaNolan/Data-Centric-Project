@@ -93,5 +93,11 @@ app.get('/grades', (req, res) => {
 
 //LECTURERS
 app.get('/lecturers', (req, res) => {
-    res.render('lecturers', { title: 'Lecturers Page', lecturers: [] });
+   MongoDB_DAO.getLecturers()
+   .then((lecturers) => {
+    res.render('lecturers', {lecturers});
+   })
+   .catch((error) => {
+    res.status(500).send("error")
+   });
 });

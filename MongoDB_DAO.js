@@ -13,3 +13,13 @@ MongoClient.connect('mongodb://localhost:27017')
     .catch((error) => {
         console.log('Connection error:', error.message);
     });
+
+    var getLecturers = () => {
+        return coll.find({}).sort({ _id: 1 }).toArray(); 
+    }
+
+    var deleteLecturer = () => {
+        return coll.deleteOne({ _id: lecturerId });
+    }
+
+    module.exports = {getLecturers, deleteLecturer}
